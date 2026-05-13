@@ -87,7 +87,7 @@ function Login({ onSuccess }: { onSuccess: () => void }) {
           </button>
         </form>
         <p className="mt-4 font-mono text-[10px] text-muted-foreground">
-          Tip: change the password in <code>src/lib/auth.ts</code>.
+          why are you here? this isn't the admin password. if you think it should be, ask me about it on twitter <a href="https://x.com/@zeteo_sec" className="text-cyan hover:underline">@zeteo_sec</a>.
         </p>
       </div>
     </div>
