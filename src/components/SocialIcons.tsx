@@ -38,9 +38,9 @@ export type SocialLink = {
 };
 
 export const SOCIALS: SocialLink[] = [
-  { name: "GitHub", href: "https://github.com/", Icon: GitHubIcon },
-  { name: "LinkedIn", href: "https://linkedin.com/", Icon: LinkedInIcon },
-  { name: "YouTube", href: "https://youtube.com/", Icon: YouTubeIcon },
-  { name: "X", href: "https://x.com/", Icon: XIcon },
+  { name: "GitHub", href: "https://github.com/0xZeteo", Icon: GitHubIcon },
+  { name: "LinkedIn", href: "https://linkedin.com/in/paulayegbusi", Icon: LinkedInIcon },
+  { name: "YouTube", href: "https://youtube.com/@zeteosec", Icon: YouTubeIcon },
+  { name: "X", href: "https://x.com/@zeteo_sec", Icon: XIcon },
   { name: "Instagram", href: "https://instagram.com/", Icon: InstagramIcon },
 ];
