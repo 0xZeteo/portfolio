@@ -36,86 +36,148 @@ const STORAGE_KEY = "zeteo:projects:v1";
 
 const SEED: Project[] = [
   {
-    id: "1",
-    slug: "aws-incident-response-lab",
-    title: "AWS Incident Response Lab",
+    id: "iam-least-privilege",
+    slug: "iam-least-privilege-generator",
+    title: "IAM Least-Privilege Generator",
     description:
-      "Built a full IR lab in AWS with CloudTrail, GuardDuty, and automated SOAR-style playbooks for credential compromise.",
-    stack: ["AWS", "CloudTrail", "GuardDuty", "Lambda", "Python"],
+      "Python CLI that analyzes CloudTrail activity and generates a hardened, least-privilege IAM policy plus Terraform for deployment.",
+    longDescription:
+      "This project addresses one of the most common cloud security findings: over-privileged IAM roles. The tool reads CloudTrail logs, maps actual role activity to IAM actions, and generates a minimal policy that keeps only the permissions the workload actually needs.",
+    stack: ["AWS", "IAM", "CloudTrail", "Python", "Terraform"],
     category: "Cloud Security",
     status: "Completed",
     difficulty: "Advanced",
-    date: "2025-09-12",
+    date: "2026-10-29",
     featured: true,
-    github: "https://github.com/",
+    github: "https://github.com/0xZeteo/iam-least-privilege",
     problem:
-      "Detect and contain compromised IAM credentials within minutes across a multi-account AWS organization.",
+      "IAM roles are commonly attached to broad managed policies such as AmazonS3FullAccess or AmazonEC2FullAccess, expanding attack surface and breaking least-privilege principles.",
     methodology:
-      "Centralized CloudTrail → S3 → Athena. GuardDuty findings forwarded via EventBridge to a Lambda playbook that disables keys, snapshots EBS, and posts to Slack.",
+      "The workflow ingests CloudTrail log data, extracts the role's actual API calls, maps those calls to IAM action/resource combinations, and emits a minimal policy plus Terraform for deployment. Policy simulation is used to validate what remains allowed versus denied.",
     outcomes:
-      "MTTC reduced from hours to under 4 minutes in lab simulations across 3 attack scenarios.",
+      "The lab reduced a role from roughly 400 actions to 4 validated actions, proving that the generated policy preserved required functionality while blocking dangerous permissions like bucket deletion, EC2 launches, and admin user creation.",
+    lessons:
+      "The biggest lesson was that AWS policy simulation and resource scoping matter just as much as action minimization. In IAM, not all actions can be narrowed by resource, and real-world least privilege requires validating both action scope and the actual route used by the workload.",
   },
   {
-    id: "2",
-    slug: "siem-detection-pack-windows",
-    title: "Windows Detection Pack for Wazuh",
+    id: "devsecops-pipeline",
+    slug: "devsecops-ci-cd-security-pipeline",
+    title: "DevSecOps CI/CD Security Pipeline",
     description:
-      "Curated Sigma-to-Wazuh detection ruleset covering credential dumping, lateral movement and persistence.",
-    stack: ["Wazuh", "Sigma", "Sysmon", "PowerShell"],
-    category: "Detection Engineering",
-    status: "Completed",
-    difficulty: "Intermediate",
-    date: "2025-08-02",
-    featured: true,
-  },
-  {
-    id: "3",
-    slug: "kubernetes-runtime-security",
-    title: "Kubernetes Runtime Security with Falco",
-    description:
-      "Deployed Falco + Falcosidekick on a k3s cluster with custom rules for crypto-miner and reverse-shell detection.",
-    stack: ["Kubernetes", "Falco", "Helm", "Grafana"],
+      "A GitHub Actions security pipeline that catches leaked secrets, vulnerable code, IaC misconfigurations, and container CVEs before deployment.",
+    longDescription:
+      "This project implements a shift-left security model in CI/CD. Every push and PR triggers a multi-stage pipeline that fails fast when secrets, weaknesses, or insecure infrastructure are introduced.",
+    stack: ["GitHub Actions", "Gitleaks", "Semgrep", "Checkov", "Trivy", "Docker"],
     category: "DevSecOps",
     status: "Completed",
-    difficulty: "Advanced",
-    date: "2025-07-18",
+    difficulty: "Intermediate",
+    date: "2026-05-20",
     featured: true,
+    github: "https://github.com/0xZeteo/devsecops-pipeline-project",
+    problem:
+      "Security issues were being discovered too late in the lifecycle, after code had already been merged and sometimes deployed. The goal was to enforce controls earlier and stop insecure changes before they reached production.",
+    methodology:
+      "The pipeline is staged as secrets scanning, SAST, IaC validation, and container vulnerability checks. Each stage must pass before deployment proceeds, and findings can be automatically surfaced as GitHub issues or Slack notifications.",
+    outcomes:
+      "The project demonstrated how to embed automated security checks directly into developer workflows, creating a repeatable gate that blocks risky commits and elevates security as part of delivery instead of a separate final step.",
+    lessons:
+      "A good pipeline is not just a set of scanners; it needs clear ownership, useful reporting, and policies that prevent failures from becoming blockers to development velocity. Making the security checks actionable is as important as making them automated.",
   },
   {
-    id: "4",
-    slug: "phishing-triage-automation",
-    title: "Phishing Triage Automation",
+    id: "osint-simulator",
+    slug: "osint-simulator",
+    title: "OSINT Simulator",
     description:
-      "Flask + Python service that ingests reported emails, detonates URLs in a sandbox and writes a triage report.",
-    stack: ["Python", "Flask", "Docker", "VirusTotal"],
+      "A training-focused OSINT simulator designed to model reconnaissance workflows, evidence gathering, and investigation decision-making.",
+    longDescription:
+      "This project brings OSINT practice into a structured lab environment where the user can explore how digital investigation workflows are built, how information is correlated, and how open-source intelligence is used to form conclusions without overstepping ethical and legal boundaries.",
+    stack: ["OSINT", "Python", "Security Research", "Linux", "Automation"],
+    category: "Research",
+    status: "Completed",
+    difficulty: "Intermediate",
+    date: "2026-10-07",
+    featured: true,
+    github: "https://github.com/0xZeteo/OSINT-SIMULATOR",
+    problem:
+      "OSINT learning is often theoretical and fragmented. The project aims to make reconnaissance workflows more structured, repeatable, and easier to learn through hands-on simulation.",
+    methodology:
+      "The simulator focuses on realistic investigation flows, emphasizing data collection, source validation, pattern recognition, and the difference between raw information and actionable intelligence.",
+    outcomes:
+      "The project creates a safe learning environment for understanding how open-source intelligence is assembled and interpreted while reinforcing the importance of responsible collection practices and source verification.",
+    lessons:
+      "The key lesson is that intelligence quality depends as much on validation and context as it does on collecting data. Useful OSINT is not just about finding information; it is about proving relevance, accuracy, and reliability.",
+  },
+  {
+    id: "cloud-incident-response",
+    slug: "cloud-incident-response-breach-simulation",
+    title: "Cloud Incident Response & Breach Simulation",
+    description:
+      "A simulated AWS breach exercise using Stratus Red Team, CloudTrail, GuardDuty, and Security Hub to test detection, logging, and incident handling.",
+    longDescription:
+      "This project demonstrates how attackers can abuse cloud identities and services, and how defenders can detect and respond to those behaviors with native AWS telemetry and detection services.",
+    stack: ["AWS", "CloudTrail", "GuardDuty", "Security Hub", "Stratus Red Team"],
     category: "Incident Response",
-    status: "In Progress",
-    difficulty: "Intermediate",
-    date: "2025-10-01",
+    status: "Completed",
+    difficulty: "Advanced",
+    date: "2026-05-23",
+    featured: true,
+    github: "https://github.com/0xZeteo/-cloud-incident-response",
+    problem:
+      "Cloud attacks can be stealthy and difficult to investigate if logging and detection coverage are weak or poorly understood. The exercise highlights where detection gaps appear and how those gaps affect response quality.",
+    methodology:
+      "Attack scenarios were executed using Stratus Red Team against AWS workloads while CloudTrail and GuardDuty were monitored. Findings were reviewed to assess what was visible, what was missed, and how incident response workflows should be adjusted.",
+    outcomes:
+      "The project showed that CloudTrail can provide strong forensic visibility, but detections may still be incomplete without thoughtful analytics and response playbooks. It also identified the need for manual triage and layered security controls.",
+    lessons:
+      "A cloud breach can succeed even when the platform logs activity correctly if the org lacks strong detection and triage workflows. Visibility alone is not enough; responders need detection logic, context, and a clear containment process.",
   },
   {
-    id: "5",
-    slug: "elk-home-soc",
-    title: "Home SOC on ELK Stack",
+    id: "kubernetes-admission-security-lab",
+    slug: "kubernetes-admission-controller-security-lab",
+    title: "Kubernetes Admission Controller Security Lab",
     description:
-      "End-to-end SOC at home: Beats agents → Logstash → Elasticsearch → Kibana with curated dashboards and alerts.",
-    stack: ["ELK", "Beats", "Sigma", "Linux"],
-    category: "SIEM",
+      "A hands-on Kubernetes security lab using Kyverno and an external validation webhook to block insecure pod configurations and unapproved images.",
+    longDescription:
+      "This lab explores admission control as a shift-left security control in Kubernetes. Instead of allowing insecure workloads to reach production, policies intercept workloads before they are created and enforce requirements such as verified image tags and non-root runtime settings.",
+    stack: ["Kubernetes", "Kyverno", "Python", "Flask", "Docker", "kind"],
+    category: "Labs",
     status: "Completed",
-    difficulty: "Intermediate",
-    date: "2025-05-22",
+    difficulty: "Advanced",
+    date: "2026-05-22",
+    featured: true,
+    github: "https://github.com/0xZeteo/Kubernetes-Admission-Controller-Security-Lab",
+    problem:
+      "Common Kubernetes misconfigurations such as using the latest tag, running containers as root, or allowing host networking can increase attack surface and make workloads harder to secure.",
+    methodology:
+      "The lab uses Kyverno policies for built-in policy checks and a custom Python Flask webhook for image allowlisting decisions, giving a practical demonstration of policy-as-code enforcement in a local kind cluster.",
+    outcomes:
+      "The project proved the value of admission control as a preventive control layer, demonstrating that insecure pods can be blocked before deployment. It also highlighted the importance of handling webhook and content-type edge cases in real environments.",
+    lessons:
+      "Policy-as-code is one of the strongest patterns in Kubernetes security, but it requires operational care. A policy can block the wrong things if it is too broad, and a webhook can become a bottleneck if not designed with reliability and trust boundaries in mind.",
   },
   {
-    id: "6",
-    slug: "owasp-top10-research",
-    title: "OWASP Top 10 — Hands-on Notes",
+    id: "avams",
+    slug: "automated-vulnerability-assessment-system",
+    title: "Automated Vulnerability Assessment & Management System",
     description:
-      "A long-form research log walking through each OWASP Top 10 category with real labs and remediations.",
-    stack: ["BurpSuite", "OWASP", "Docker"],
-    category: "Web Security",
+      "A Python-based vulnerability assessment pipeline that scans with GVM/OpenVAS, parses findings, generates PDF reports, and exposes a dashboard for review.",
+    longDescription:
+      "This final-year style project automates the full vulnerability assessment workflow: scan targets, classify findings by severity, generate a formal report, and visualize results in a dashboard for easier triage and remediation planning.",
+    stack: ["Python", "GVM", "OpenVAS", "Flask", "ReportLab", "VMware"],
+    category: "Cloud Security",
     status: "Completed",
-    difficulty: "Beginner",
-    date: "2025-03-04",
+    difficulty: "Advanced",
+    date: "2026-08-30",
+    featured: true,
+    github: "https://github.com/0xZeteo/Automated-Vulnerability-Assessment-and-Management-System",
+    problem:
+      "Manual vulnerability assessments are slow, repetitive, and inconsistent. Large scan results are hard to interpret without a structured reporting and triage workflow.",
+    methodology:
+      "The project automates scanning with GVM/OpenVAS, extracts findings into a structured model, classifies them by CVSS severity, and generates a PDF that can be shared with stakeholders. A Flask dashboard provides live findings and filtering for the assessment team.",
+    outcomes:
+      "The case study produced a full assessment against a simulated fintech infrastructure, generating 713 findings and showing how automation can shorten assessment cycles while improving consistency and documentation.",
+    lessons:
+      "Automation pays off most when it turns raw scan output into decision-ready insight. The real value is not just the scan itself; it is the ability to convert findings into remediation priorities and evidence-backed reports.",
   },
 ];
 
