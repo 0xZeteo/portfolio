@@ -17,12 +17,12 @@ export interface Project {
   title: string;
   description: string;
   longDescription?: string;
-  thumbnail?: string; // url or data url
+  thumbnail?: string;
   stack: string[];
   category: ProjectCategory;
   status: ProjectStatus;
   difficulty: Difficulty;
-  date: string; // ISO
+  date: string;
   featured?: boolean;
   github?: string;
   problem?: string;
@@ -34,7 +34,7 @@ export interface Project {
 
 const STORAGE_KEY = "zeteo:projects:v1";
 
-const SEED: Project[] = [
+export const PROJECTS: Project[] = [
   {
     id: "iam-least-privilege",
     slug: "iam-least-privilege-generator",
@@ -181,16 +181,27 @@ const SEED: Project[] = [
   },
 ];
 
+const SEED: Project[] = PROJECTS;
+
 function read(): Project[] {
   if (typeof window === "undefined") return SEED;
+
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(SEED));
       return SEED;
     }
-    return JSON.parse(raw) as Project[];
+
+    const parsed = JSON.parse(raw) as Project[];
+    if (!Array.isArray(parsed) || parsed.length === 0) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(SEED));
+      return SEED;
+    }
+
+    return parsed;
   } catch {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(SEED));
     return SEED;
   }
 }
