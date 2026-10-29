@@ -30,6 +30,7 @@ export interface Project {
   outcomes?: string;
   challenges?: string;
   lessons?: string;
+  highlights?: string[];
 }
 
 const STORAGE_KEY = "zeteo:projects:v1";
@@ -40,9 +41,9 @@ export const PROJECTS: Project[] = [
     slug: "iam-least-privilege-generator",
     title: "IAM Least-Privilege Generator",
     description:
-      "Python CLI that analyzes CloudTrail activity and generates a hardened, least-privilege IAM policy plus Terraform for deployment.",
+      "A Python tool that turns CloudTrail activity into a minimal IAM policy and deployable Terraform — replacing broad AWS admin permissions with evidence-based least privilege.",
     longDescription:
-      "This project addresses one of the most common cloud security findings: over-privileged IAM roles. The tool reads CloudTrail logs, maps actual role activity to IAM actions, and generates a minimal policy that keeps only the permissions the workload actually needs.",
+      "This project tackles the most common cloud security issue: over-privileged IAM roles. It reads CloudTrail activity, maps real API usage to AWS actions and resources, and emits a policy that removes unnecessary access while preserving business functionality.",
     stack: ["AWS", "IAM", "CloudTrail", "Python", "Terraform"],
     category: "Cloud Security",
     status: "Completed",
@@ -51,22 +52,26 @@ export const PROJECTS: Project[] = [
     featured: true,
     github: "https://github.com/0xZeteo/iam-least-privilege",
     problem:
-      "IAM roles are commonly attached to broad managed policies such as AmazonS3FullAccess or AmazonEC2FullAccess, expanding attack surface and breaking least-privilege principles.",
+      "IAM roles are often attached to managed policies like AmazonS3FullAccess or AmazonEC2FullAccess, creating a huge blast radius when a workload is compromised. The issue is not just access breadth — it is the lack of resource-aware, evidence-based policy design.",
     methodology:
-      "The workflow ingests CloudTrail log data, extracts the role's actual API calls, maps those calls to IAM action/resource combinations, and emits a minimal policy plus Terraform for deployment. Policy simulation is used to validate what remains allowed versus denied.",
+      "The tool ingests CloudTrail logs, filters the role's actual usage, maps actions to IAM resources, and builds a minimal policy based on observed behavior. The generated Terraform output is then validated against AWS policy simulation so allowed and denied actions are explicit.",
     outcomes:
-      "The lab reduced a role from roughly 400 actions to 4 validated actions, proving that the generated policy preserved required functionality while blocking dangerous permissions like bucket deletion, EC2 launches, and admin user creation.",
+      "The lab reduced a role from roughly 400 permissions to 4 validated actions while preserving the necessary operations. It proved that least privilege can retain real workload function without allowing destructive actions like bucket deletion, EC2 launch, or admin user creation.",
     lessons:
-      "The biggest lesson was that AWS policy simulation and resource scoping matter just as much as action minimization. In IAM, not all actions can be narrowed by resource, and real-world least privilege requires validating both action scope and the actual route used by the workload.",
+      "Real least privilege is not just about removing actions; it is about proving the role still works in production-like conditions. Resource scoping and action validation matter just as much as permission minimization.",
+    highlights: [
+      "Reduced a role from ~400 actions to 4",
+      "Built deployable Terraform from real CloudTrail usage",
+    ],
   },
   {
     id: "devsecops-pipeline",
     slug: "devsecops-ci-cd-security-pipeline",
     title: "DevSecOps CI/CD Security Pipeline",
     description:
-      "A GitHub Actions security pipeline that catches leaked secrets, vulnerable code, IaC misconfigurations, and container CVEs before deployment.",
+      "A GitHub Actions pipeline that blocks secrets leaks, vulnerable code, insecure IaC, and container CVEs before deployment — shifting security left into the delivery process.",
     longDescription:
-      "This project implements a shift-left security model in CI/CD. Every push and PR triggers a multi-stage pipeline that fails fast when secrets, weaknesses, or insecure infrastructure are introduced.",
+      "This project automates security checks across the delivery lifecycle. Each push and PR triggers a multi-stage pipeline that enforces secrets scanning, static analysis, infrastructure validation, and dependency/container risk checks before anything reaches production.",
     stack: ["GitHub Actions", "Gitleaks", "Semgrep", "Checkov", "Trivy", "Docker"],
     category: "DevSecOps",
     status: "Completed",
@@ -75,22 +80,26 @@ export const PROJECTS: Project[] = [
     featured: true,
     github: "https://github.com/0xZeteo/devsecops-pipeline-project",
     problem:
-      "Security issues were being discovered too late in the lifecycle, after code had already been merged and sometimes deployed. The goal was to enforce controls earlier and stop insecure changes before they reached production.",
+      "Security findings were showing up too late in the lifecycle, after code had already been merged and sometimes deployed. The goal was to move detection earlier and make reproduction and remediation cheaper for engineering teams.",
     methodology:
-      "The pipeline is staged as secrets scanning, SAST, IaC validation, and container vulnerability checks. Each stage must pass before deployment proceeds, and findings can be automatically surfaced as GitHub issues or Slack notifications.",
+      "The pipeline stages secrets scanning, SAST, IaC validation, and container security checks as enforceable gates. Issues feed into GitHub automation and Slack alerts, ensuring risky changes fail fast with a clear remediation path.",
     outcomes:
-      "The project demonstrated how to embed automated security checks directly into developer workflows, creating a repeatable gate that blocks risky commits and elevates security as part of delivery instead of a separate final step.",
+      "The project demonstrates a practical shift-left engineering workflow: code fails early, containers are checked before deploy, and misconfigurations are identified before they become production incidents.",
     lessons:
-      "A good pipeline is not just a set of scanners; it needs clear ownership, useful reporting, and policies that prevent failures from becoming blockers to development velocity. Making the security checks actionable is as important as making them automated.",
+      "Automation is only useful when it creates a clear action loop. Security tooling must be fast, understandable, and integrated into the same workflow developers already use.",
+    highlights: [
+      "Built a four-stage security gate for every PR",
+      "Catches secrets, IaC issues, SAST findings and CVEs early",
+    ],
   },
   {
     id: "osint-simulator",
     slug: "osint-simulator",
     title: "OSINT Simulator",
     description:
-      "A training-focused OSINT simulator designed to model reconnaissance workflows, evidence gathering, and investigation decision-making.",
+      "A structured reconnaissance simulator for learning how open-source intelligence is gathered, verified, and turned into actionable investigation findings.",
     longDescription:
-      "This project brings OSINT practice into a structured lab environment where the user can explore how digital investigation workflows are built, how information is correlated, and how open-source intelligence is used to form conclusions without overstepping ethical and legal boundaries.",
+      "This project turns OSINT into a repeatable learning workflow. It focuses on how digital investigators collect data from open sources, evaluate source quality, connect clues, and build reliable conclusions without violating ethical or legal boundaries.",
     stack: ["OSINT", "Python", "Security Research", "Linux", "Automation"],
     category: "Research",
     status: "Completed",
@@ -99,22 +108,26 @@ export const PROJECTS: Project[] = [
     featured: true,
     github: "https://github.com/0xZeteo/OSINT-SIMULATOR",
     problem:
-      "OSINT learning is often theoretical and fragmented. The project aims to make reconnaissance workflows more structured, repeatable, and easier to learn through hands-on simulation.",
+      "OSINT education is often fragmented and theoretical. Learners need a workflow that explains not only what information can be found, but how to validate trust, distinguish noise from signal, and connect clues into a meaningful case narrative.",
     methodology:
-      "The simulator focuses on realistic investigation flows, emphasizing data collection, source validation, pattern recognition, and the difference between raw information and actionable intelligence.",
+      "The simulator emphasizes realistic investigative flow: source collection, correlation, triage, and confidence assessment. It is designed to teach the difference between raw public data and usable intelligence.",
     outcomes:
-      "The project creates a safe learning environment for understanding how open-source intelligence is assembled and interpreted while reinforcing the importance of responsible collection practices and source verification.",
+      "The project creates a safe and repeatable environment to learn digital investigation tradecraft while reinforcing source validation, ethical collection, and structured reasoning.",
     lessons:
-      "The key lesson is that intelligence quality depends as much on validation and context as it does on collecting data. Useful OSINT is not just about finding information; it is about proving relevance, accuracy, and reliability.",
+      "OSINT is not just data collection; it is disciplined interpretation. The value comes from reliability, context, and careful investigation, not simply gathering more results.",
+    highlights: [
+      "Built a structured investigation workflow around source validation",
+      "Emphasizes ethical collection and intelligence reliability",
+    ],
   },
   {
     id: "cloud-incident-response",
     slug: "cloud-incident-response-breach-simulation",
     title: "Cloud Incident Response & Breach Simulation",
     description:
-      "A simulated AWS breach exercise using Stratus Red Team, CloudTrail, GuardDuty, and Security Hub to test detection, logging, and incident handling.",
+      "A simulated AWS breach exercise using Stratus Red Team and native cloud telemetry to teach detection, investigation, and containment for real-world security events.",
     longDescription:
-      "This project demonstrates how attackers can abuse cloud identities and services, and how defenders can detect and respond to those behaviors with native AWS telemetry and detection services.",
+      "This project models a cloud breach end-to-end using AWS logging and detection controls. It shows how attackers abuse identities and services, then compares that against what defenders can actually see in CloudTrail, GuardDuty, and Security Hub.",
     stack: ["AWS", "CloudTrail", "GuardDuty", "Security Hub", "Stratus Red Team"],
     category: "Incident Response",
     status: "Completed",
@@ -123,22 +136,26 @@ export const PROJECTS: Project[] = [
     featured: true,
     github: "https://github.com/0xZeteo/-cloud-incident-response",
     problem:
-      "Cloud attacks can be stealthy and difficult to investigate if logging and detection coverage are weak or poorly understood. The exercise highlights where detection gaps appear and how those gaps affect response quality.",
+      "Cloud attacks can be stealthy and difficult to investigate if defenders do not understand logging, detection coverage, and triage workflow. A breach can create noise without creating clarity unless the response path is well designed.",
     methodology:
-      "Attack scenarios were executed using Stratus Red Team against AWS workloads while CloudTrail and GuardDuty were monitored. Findings were reviewed to assess what was visible, what was missed, and how incident response workflows should be adjusted.",
+      "Attack scenarios are executed against controlled AWS workloads while telemetry is monitored. Findings are reviewed to determine what was visible, what was missed, and how detection gaps affect response quality.",
     outcomes:
-      "The project showed that CloudTrail can provide strong forensic visibility, but detections may still be incomplete without thoughtful analytics and response playbooks. It also identified the need for manual triage and layered security controls.",
+      "The project demonstrates that cloud visibility is necessary but not sufficient. Strong logging matters, but layered detection and response processes are what turn forensics into action.",
     lessons:
-      "A cloud breach can succeed even when the platform logs activity correctly if the org lacks strong detection and triage workflows. Visibility alone is not enough; responders need detection logic, context, and a clear containment process.",
+      "Defenders need both telemetry and operational clarity. A platform can log activity correctly and still fail to support a strong response unless analysts know how to investigate and contain the event quickly.",
+    highlights: [
+      "Simulated AWS attack paths and documented response gaps",
+      "Focused on forensic visibility, detecion gaps and containment",
+    ],
   },
   {
     id: "kubernetes-admission-security-lab",
     slug: "kubernetes-admission-controller-security-lab",
     title: "Kubernetes Admission Controller Security Lab",
     description:
-      "A hands-on Kubernetes security lab using Kyverno and an external validation webhook to block insecure pod configurations and unapproved images.",
+      "A hands-on Kubernetes security lab using Kyverno and an external webhook to block insecure pod configurations, root containers, and unapproved images before deployment.",
     longDescription:
-      "This lab explores admission control as a shift-left security control in Kubernetes. Instead of allowing insecure workloads to reach production, policies intercept workloads before they are created and enforce requirements such as verified image tags and non-root runtime settings.",
+      "This lab explores shift-left enforcement in Kubernetes. Instead of allowing insecure workloads to reach production, policy checks intercept workloads during admission and deny those that violate security rules like root execution, unpinned image tags, or host networking.",
     stack: ["Kubernetes", "Kyverno", "Python", "Flask", "Docker", "kind"],
     category: "Labs",
     status: "Completed",
@@ -147,22 +164,26 @@ export const PROJECTS: Project[] = [
     featured: true,
     github: "https://github.com/0xZeteo/Kubernetes-Admission-Controller-Security-Lab",
     problem:
-      "Common Kubernetes misconfigurations such as using the latest tag, running containers as root, or allowing host networking can increase attack surface and make workloads harder to secure.",
+      "Kubernetes misconfigurations are frequent and can quietly expand the attack surface. Insecure workloads often make it into clusters because the platform allows them to reach execution without enforcement at the API layer.",
     methodology:
-      "The lab uses Kyverno policies for built-in policy checks and a custom Python Flask webhook for image allowlisting decisions, giving a practical demonstration of policy-as-code enforcement in a local kind cluster.",
+      "The lab combines built-in Kyverno policies with a custom Python webhook for image allowlisting. It utilizes a local kind cluster to show how admission control can enforce security policy before pods are created.",
     outcomes:
-      "The project proved the value of admission control as a preventive control layer, demonstrating that insecure pods can be blocked before deployment. It also highlighted the importance of handling webhook and content-type edge cases in real environments.",
+      "The project proves that access control in Kubernetes can be moved earlier in the lifecycle. Insecure workloads are blocked before deployment, reducing operational risk and creating a stronger security baseline.",
     lessons:
-      "Policy-as-code is one of the strongest patterns in Kubernetes security, but it requires operational care. A policy can block the wrong things if it is too broad, and a webhook can become a bottleneck if not designed with reliability and trust boundaries in mind.",
+      "Policy-as-code is not just a compliance feature; it is a core platform control. The value shows up when security requirements are enforced automatically and consistently across all workloads.",
+    highlights: [
+      "Denied insecure pods before they reached the cluster",
+      "Combined Kyverno policies with a custom allowlist webhook",
+    ],
   },
   {
     id: "avams",
     slug: "automated-vulnerability-assessment-system",
     title: "Automated Vulnerability Assessment & Management System",
     description:
-      "A Python-based vulnerability assessment pipeline that scans with GVM/OpenVAS, parses findings, generates PDF reports, and exposes a dashboard for review.",
+      "A Python-driven assessment system that automates scanning, parsing, triage, reporting, and dashboarding for vulnerability management in a simulated fintech environment.",
     longDescription:
-      "This final-year style project automates the full vulnerability assessment workflow: scan targets, classify findings by severity, generate a formal report, and visualize results in a dashboard for easier triage and remediation planning.",
+      "This project automates the full vulnerability assessment lifecycle: it launches OpenVAS/GVM scans, extracts and classifies findings by severity, produces a formal PDF report, and surfaces results in a dashboard for stakeholders to review and act on.",
     stack: ["Python", "GVM", "OpenVAS", "Flask", "ReportLab", "VMware"],
     category: "Cloud Security",
     status: "Completed",
@@ -171,13 +192,17 @@ export const PROJECTS: Project[] = [
     featured: true,
     github: "https://github.com/0xZeteo/Automated-Vulnerability-Assessment-and-Management-System",
     problem:
-      "Manual vulnerability assessments are slow, repetitive, and inconsistent. Large scan results are hard to interpret without a structured reporting and triage workflow.",
+      "Manual vulnerability assessments are slow, repetitive, and inconsistent. Large scan outputs are difficult to interpret without a workflow that normalizes them into remediation-ready, stakeholder-friendly reporting.",
     methodology:
-      "The project automates scanning with GVM/OpenVAS, extracts findings into a structured model, classifies them by CVSS severity, and generates a PDF that can be shared with stakeholders. A Flask dashboard provides live findings and filtering for the assessment team.",
+      "The project chains scan execution, parsing, severity classification, and PDF generation into one workflow. A Flask dashboard provides filtering and drilldown views so findings become easier to understand and prioritize.",
     outcomes:
-      "The case study produced a full assessment against a simulated fintech infrastructure, generating 713 findings and showing how automation can shorten assessment cycles while improving consistency and documentation.",
+      "The assessment generated 713 results in a simulated fintech environment, including a substantial number of critical findings, showing how automation can compress assessment cycles while improving consistency and documentation quality.",
     lessons:
-      "Automation pays off most when it turns raw scan output into decision-ready insight. The real value is not just the scan itself; it is the ability to convert findings into remediation priorities and evidence-backed reports.",
+      "The strongest value of a vulnerability workflow is not the scan itself — it is converting raw data into prioritized, evidence-backed decisions. That is what turns security tooling into operational value.",
+    highlights: [
+      "Generated 713 findings across a simulated fintech stack",
+      "Combined scanning, reporting and dashboarding in one workflow",
+    ],
   },
 ];
 
@@ -206,12 +231,6 @@ function read(): Project[] {
   }
 }
 
-function write(items: Project[]) {
-  if (typeof window === "undefined") return;
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
-  window.dispatchEvent(new Event("zeteo:projects:changed"));
-}
-
 export const projectStore = {
   list(): Project[] {
     return read().sort((a, b) => +new Date(b.date) - +new Date(a.date));
@@ -229,13 +248,17 @@ export const projectStore = {
     const i = all.findIndex((x) => x.id === p.id);
     if (i >= 0) all[i] = p;
     else all.push(p);
-    write(all);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
+    window.dispatchEvent(new Event("zeteo:projects:changed"));
   },
   remove(id: string) {
-    write(read().filter((p) => p.id !== id));
+    const next = read().filter((p) => p.id !== id);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+    window.dispatchEvent(new Event("zeteo:projects:changed"));
   },
   reset() {
-    write(SEED);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(SEED));
+    window.dispatchEvent(new Event("zeteo:projects:changed"));
   },
 };
 
